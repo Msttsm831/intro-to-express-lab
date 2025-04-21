@@ -16,19 +16,18 @@ app.get('/greetings/:username', (req, res) =>{
 
 
     
-    app.get('/roll/:number', (req, res) => {
-        const number = req.params.number;
-    
-        
-        if (number != +number) {
-            res.send("You must specify a number.");
-        } 
-        
-        else {
-            res.send(`You rolled ${Math.floor(Math.random() * (+number + 1))}`);
-        }
-        
-    });
+app.get('/roll/:number', (req, res) => {
+    const number = req.params.number;
+
+    if (isNaN(Number(number))) {
+        res.send("You must specify a number.");
+    } 
+    else {
+        const randomRoll = Math.floor(Math.random() * (Number(number) + 1));
+        res.send(`You rolled ${randomRoll}`);
+    }
+});
+
         
 
 
@@ -36,16 +35,20 @@ const collectibles = [
     { name: 'shiny ball', price: 5.95 },
     { name: 'autographed picture of a dog', price: 10 },
     { name: 'vintage 1970s yogurt SOLD AS-IS', price: 0.99 }
-  ];
+];
 
-  app.get('/collectibles/:index', (req, res) => {
-    const index = req.params.index; 
+app.get('/collectibles/:index', (req, res) => {
+    const index = Number(req.params.index); 
+
+    if (isNaN(index) || !Number.isInteger(index)) {
+        res.send("You must specify a valid numeric index.");
+        return;
+    }
 
     if (index >= 0 && index < collectibles.length) {
-        const item = collectibles[index];  
-     res.send(`So, you want the ${item.name}? For ${item.price}, it can be yours!`);
-    } 
-    else {
+        const item = collectibles[index];
+        res.send(`So, you want the ${item.name}? For ${item.price}, it can be yours!`);
+    } else {
         res.send("This item is not yet in stock. Check back soon!");
     }
 });
